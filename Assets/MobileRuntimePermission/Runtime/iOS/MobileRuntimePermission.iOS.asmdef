@@ -1,0 +1,19 @@
+{
+    "name": "MobileRuntimePermission.iOS",
+    "rootNamespace": "MobileRuntimePermission.iOS",
+    "references": [
+        "GUID:681e2242da4d3f443927deb33627f808"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "iOS"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

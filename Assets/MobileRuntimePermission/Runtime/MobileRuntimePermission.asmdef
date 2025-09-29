@@ -1,0 +1,18 @@
+{
+    "name": "MobileRuntimePermission",
+    "rootNamespace": "MobileRuntimePermission",
+    "references": [
+        "GUID:681e2242da4d3f443927deb33627f808",
+        "GUID:0f1433681f34edb4dabd1df315ba7b11",
+        "GUID:87b851de3e8229f49aebb3f772db5ec9"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
