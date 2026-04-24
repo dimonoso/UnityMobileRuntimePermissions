@@ -1,0 +1,26 @@
+{
+  "name": "com.dimonoso.mobile-runtime-permissions",
+  "version": "0.1.0",
+  "displayName": "Mobile Runtime Permissions",
+  "description": "Runtime permission helpers for Android and iOS with Unity Project Settings and build-time configuration.",
+  "unity": "6000.0",
+  "author": {
+    "name": "dimonoso"
+  },
+  "documentationUrl": "https://github.com/dimonoso/UnityMobileRuntimePermissions",
+  "license": "MIT",
+  "keywords": [
+    "unity",
+    "permissions",
+    "android",
+    "ios",
+    "mobile"
+  ],
+  "samples": [
+    {
+      "displayName": "Basic Usage",
+      "description": "Shows how to query and request permissions from script.",
+      "path": "Samples~/Basic Usage"
+    }
+  ]
+}
