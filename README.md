@@ -1,26 +1,41 @@
-# Unity Mobile Runtime Permissions
+# Mobile Runtime Permissions
 
-Unity repository for an embedded UPM package that manages runtime/mobile privacy permissions on Android and iOS.
+Unity Package Manager package for runtime/mobile privacy permissions on Android and iOS.
 
-Package path:
+## Install from git
 
-```text
-/Packages/com.dimonoso.mobile-runtime-permissions
-```
-
-Install from git:
+Use the repository root directly:
 
 ```text
-https://github.com/dimonoso/UnityMobileRuntimePermissions.git?path=/Packages/com.dimonoso.mobile-runtime-permissions
+https://github.com/dimonoso/UnityMobileRuntimePermissions.git
 ```
 
-Current implementation includes:
-- embedded UPM package scaffold
+## Development project
+
+The Unity development project now lives in:
+
+```text
+DevProject/
+```
+
+The package itself lives at the repository root, so Unity Package Manager can consume it without `?path=...`.
+
+## Package contents
+
+- `Runtime/`
+- `Editor/`
+- `Plugins/`
+- `Samples~/`
+- `Documentation~/`
+- `package.json`
+
+## Current state
+
+The package already includes:
+- runtime API scaffold
 - common + platform-specific permission enum
-- runtime permission manager API
 - Project Settings integration
-- Android/iOS build-time configuration hooks
-- Android Java/Kotlin source plugin scaffold
-- iOS native bridge scaffold
+- Android and iOS native bridge scaffolding
+- build-time Android/iOS configuration hooks
 
-The package is still under active development, and some platform-specific flows are currently scaffolded rather than fully finalized.
+Some permission flows still need runtime verification and device testing.
