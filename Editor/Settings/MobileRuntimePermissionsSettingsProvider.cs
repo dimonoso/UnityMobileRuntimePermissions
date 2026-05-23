@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using MobileRuntimePermissions.Internal;
 using UnityEditor;
@@ -12,15 +14,80 @@ namespace MobileRuntimePermissions.Editor.Settings
         private const string SharedPermissionHelp =
             "Permissions marked with * are shared settings between Android and iOS. Enabling or disabling them on one platform applies to the other platform as well.";
 
+        private const string CustomLocaleLabel = "Custom...";
+
+        private static readonly Dictionary<string, string> SystemLanguageLocaleCodes = new()
+        {
+            ["Afrikaans"] = "af",
+            ["Arabic"] = "ar",
+            ["Basque"] = "eu",
+            ["Belarusian"] = "be",
+            ["Bulgarian"] = "bg",
+            ["Catalan"] = "ca",
+            ["Chinese"] = "zh",
+            ["ChineseSimplified"] = "zh-Hans",
+            ["ChineseTraditional"] = "zh-Hant",
+            ["Croatian"] = "hr",
+            ["Czech"] = "cs",
+            ["Danish"] = "da",
+            ["Dutch"] = "nl",
+            ["English"] = "en",
+            ["Estonian"] = "et",
+            ["Faroese"] = "fo",
+            ["Finnish"] = "fi",
+            ["French"] = "fr",
+            ["German"] = "de",
+            ["Greek"] = "el",
+            ["Hebrew"] = "he",
+            ["Hindi"] = "hi",
+            ["Hungarian"] = "hu",
+            ["Icelandic"] = "is",
+            ["Indonesian"] = "id",
+            ["Italian"] = "it",
+            ["Japanese"] = "ja",
+            ["Korean"] = "ko",
+            ["Latvian"] = "lv",
+            ["Lithuanian"] = "lt",
+            ["Norwegian"] = "nb",
+            ["Polish"] = "pl",
+            ["Portuguese"] = "pt",
+            ["Romanian"] = "ro",
+            ["Russian"] = "ru",
+            ["SerboCroatian"] = "sr-Latn",
+            ["Slovak"] = "sk",
+            ["Slovenian"] = "sl",
+            ["Spanish"] = "es",
+            ["Swedish"] = "sv",
+            ["Thai"] = "th",
+            ["Turkish"] = "tr",
+            ["Ukrainian"] = "uk",
+            ["Vietnamese"] = "vi",
+        };
+
         private static readonly string[] PlatformTabs = { "Android", "iOS" };
         private static int selectedPlatformTab;
         private static Vector2 androidScrollPosition;
         private static Vector2 iosScrollPosition;
+        private static string[] languagePopupLabels;
+        private static string[] languagePopupLocaleCodes;
 
         private enum PlatformTab
         {
             Android,
             Ios,
+        }
+
+        private readonly struct LanguageOption
+        {
+            public LanguageOption(string label, string localeCode)
+            {
+                Label = label;
+                LocaleCode = localeCode;
+            }
+
+            public string Label { get; }
+
+            public string LocaleCode { get; }
         }
 
         [SettingsProvider]
@@ -104,7 +171,7 @@ namespace MobileRuntimePermissions.Editor.Settings
                     {
                         var localizedEntry = entry.localizedUsageDescriptions[index];
                         EditorGUILayout.BeginHorizontal();
-                        localizedEntry.locale = EditorGUILayout.TextField(localizedEntry.locale, GUILayout.MaxWidth(70f));
+                        DrawLocaleField(localizedEntry);
                         localizedEntry.message = EditorGUILayout.TextField(localizedEntry.message);
                         if (GUILayout.Button("-", GUILayout.Width(24f)))
                         {
@@ -127,6 +194,41 @@ namespace MobileRuntimePermissions.Editor.Settings
             }
 
             EditorGUILayout.EndVertical();
+        }
+
+        private static void DrawLocaleField(LocalizedUsageDescription localizedEntry)
+        {
+            EnsureLanguageOptions();
+
+            var currentLocale = localizedEntry.locale ?? string.Empty;
+            var selectedIndex = FindLocaleIndex(currentLocale);
+            var customIndex = languagePopupLabels.Length - 1;
+            if (selectedIndex < 0)
+            {
+                selectedIndex = customIndex;
+            }
+
+            var newIndex = EditorGUILayout.Popup(
+                selectedIndex,
+                languagePopupLabels,
+                GUILayout.MinWidth(170f),
+                GUILayout.MaxWidth(220f));
+
+            if (newIndex != customIndex)
+            {
+                localizedEntry.locale = languagePopupLocaleCodes[newIndex];
+                return;
+            }
+
+            if (selectedIndex != customIndex)
+            {
+                currentLocale = string.Empty;
+            }
+
+            localizedEntry.locale = EditorGUILayout.TextField(
+                currentLocale,
+                GUILayout.MinWidth(64f),
+                GUILayout.MaxWidth(96f));
         }
 
         private static bool SupportsPlatform(PermissionDefinition definition, PlatformTab platform)
@@ -165,6 +267,53 @@ namespace MobileRuntimePermissions.Editor.Settings
         private static bool IsShared(PermissionDefinition definition)
         {
             return definition.SupportsAndroid && definition.SupportsIos;
+        }
+
+        private static void EnsureLanguageOptions()
+        {
+            if (languagePopupLabels != null && languagePopupLocaleCodes != null)
+            {
+                return;
+            }
+
+            var options = new List<LanguageOption>();
+            foreach (SystemLanguage language in Enum.GetValues(typeof(SystemLanguage)))
+            {
+                var languageName = language.ToString();
+                if (languageName == "Unknown" ||
+                    !SystemLanguageLocaleCodes.TryGetValue(languageName, out var localeCode))
+                {
+                    continue;
+                }
+
+                options.Add(
+                    new LanguageOption(
+                        $"{ObjectNames.NicifyVariableName(languageName)} ({localeCode})",
+                        localeCode));
+            }
+
+            options.Sort((left, right) => string.Compare(left.Label, right.Label, StringComparison.Ordinal));
+
+            languagePopupLabels = options.Select(option => option.Label).Append(CustomLocaleLabel).ToArray();
+            languagePopupLocaleCodes = options.Select(option => option.LocaleCode).Append(string.Empty).ToArray();
+        }
+
+        private static int FindLocaleIndex(string locale)
+        {
+            if (string.IsNullOrEmpty(locale) || languagePopupLocaleCodes == null)
+            {
+                return -1;
+            }
+
+            for (var index = 0; index < languagePopupLocaleCodes.Length - 1; index++)
+            {
+                if (string.Equals(languagePopupLocaleCodes[index], locale, StringComparison.OrdinalIgnoreCase))
+                {
+                    return index;
+                }
+            }
+
+            return -1;
         }
     }
 }

@@ -1,6 +1,6 @@
 {
   "name": "com.dimonoso.mobile-runtime-permissions",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "displayName": "Mobile Runtime Permissions",
   "description": "Runtime permission helpers for Android and iOS with Unity Project Settings and build-time configuration.",
   "unity": "6000.0",
